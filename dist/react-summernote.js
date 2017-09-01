@@ -18070,7 +18070,8 @@ var ReactSummernote = function (_Component) {
     value: function initEditor() {
       var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-      var options = this.props.options || opt;
+      var options = this.props.options || {};
+      options = Object.assign(options, opt);
       var codeview = this.props.codeview;
       // const codeviewCommand = codeview ? 'codeview.activate' : 'codeview.deactivate';
       options.callbacks = this.callbacks;

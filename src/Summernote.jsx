@@ -76,7 +76,8 @@ class ReactSummernote extends Component {
   }
 
   initEditor(opt = {}) {
-    const options = this.props.options || opt;
+    let options = this.props.options || {};
+    options = Object.assign(options, opt);
     const codeview = this.props.codeview;
     // const codeviewCommand = codeview ? 'codeview.activate' : 'codeview.deactivate';
     options.callbacks = this.callbacks;
