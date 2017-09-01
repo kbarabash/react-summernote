@@ -30,6 +30,7 @@ class ReactSummernote extends Component {
     this.insertImage = this.insertImage.bind(this);
     this.insertNode = this.insertNode.bind(this);
     this.insertText = this.insertText.bind(this);
+    this.disableDragAndDrop = this.disableDragAndDrop.bind(this);
 
     ReactSummernote.focus = this.focus.bind(this);
     ReactSummernote.isEmpty = this.isEmpty.bind(this);
@@ -44,16 +45,7 @@ class ReactSummernote extends Component {
   }
 
   componentDidMount() {
-    const options = this.props.options || {};
-    const codeview = this.props.codeview;
-    // const codeviewCommand = codeview ? 'codeview.activate' : 'codeview.deactivate';
-    options.callbacks = this.callbacks;
-
-    this.editor = $(`#${this.uid}`);
-    this.editor.summernote(options);
-    if (codeview) {
-      this.editor.summernote('codeview.activate');
-    }
+    this.initEditor();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -80,6 +72,23 @@ class ReactSummernote extends Component {
   }
 
   componentWillUnmount() {
+    this.destroyEditor();
+  }
+
+  initEditor(opt = {}) {
+    const options = this.props.options || opt;
+    const codeview = this.props.codeview;
+    // const codeviewCommand = codeview ? 'codeview.activate' : 'codeview.deactivate';
+    options.callbacks = this.callbacks;
+
+    this.editor = $(`#${this.uid}`);
+    this.editor.summernote(options);
+    if (codeview) {
+      this.editor.summernote('codeview.activate');
+    }
+  }
+
+  destroyEditor() {
     if (this.editor.summernote) {
       this.editor.summernote('destroy');
     }
@@ -102,6 +111,7 @@ class ReactSummernote extends Component {
         focus: this.focus,
         isEmpty: this.isEmpty,
         reset: this.reset,
+        disableDragAndDrop: this.disableDragAndDrop,
         replace: this.replace,
         disable: this.disable,
         enable: this.enable,
@@ -146,6 +156,11 @@ class ReactSummernote extends Component {
 
       noteEditable.html(content);
     }
+  }
+
+  disableDragAndDrop(disableDragAndDrop) {
+    this.destroyEditor();
+    this.createOptions({ disableDragAndDrop });
   }
 
   disable() {
