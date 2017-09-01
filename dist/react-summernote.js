@@ -18015,6 +18015,7 @@ var ReactSummernote = function (_Component) {
     _this.insertImage = _this.insertImage.bind(_this);
     _this.insertNode = _this.insertNode.bind(_this);
     _this.insertText = _this.insertText.bind(_this);
+    _this.disableDragAndDrop = _this.disableDragAndDrop.bind(_this);
 
     ReactSummernote.focus = _this.focus.bind(_this);
     ReactSummernote.isEmpty = _this.isEmpty.bind(_this);
@@ -18032,16 +18033,7 @@ var ReactSummernote = function (_Component) {
   _createClass(ReactSummernote, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var options = this.props.options || {};
-      var codeview = this.props.codeview;
-      // const codeviewCommand = codeview ? 'codeview.activate' : 'codeview.deactivate';
-      options.callbacks = this.callbacks;
-
-      this.editor = $('#' + this.uid);
-      this.editor.summernote(options);
-      if (codeview) {
-        this.editor.summernote('codeview.activate');
-      }
+      this.initEditor();
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -18071,6 +18063,27 @@ var ReactSummernote = function (_Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
+      this.destroyEditor();
+    }
+  }, {
+    key: 'initEditor',
+    value: function initEditor() {
+      var opt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var options = this.props.options || opt;
+      var codeview = this.props.codeview;
+      // const codeviewCommand = codeview ? 'codeview.activate' : 'codeview.deactivate';
+      options.callbacks = this.callbacks;
+
+      this.editor = $('#' + this.uid);
+      this.editor.summernote(options);
+      if (codeview) {
+        this.editor.summernote('codeview.activate');
+      }
+    }
+  }, {
+    key: 'destroyEditor',
+    value: function destroyEditor() {
       if (this.editor.summernote) {
         this.editor.summernote('destroy');
       }
@@ -18097,6 +18110,7 @@ var ReactSummernote = function (_Component) {
           focus: this.focus,
           isEmpty: this.isEmpty,
           reset: this.reset,
+          disableDragAndDrop: this.disableDragAndDrop,
           replace: this.replace,
           disable: this.disable,
           enable: this.enable,
@@ -18149,6 +18163,12 @@ var ReactSummernote = function (_Component) {
 
         noteEditable.html(content);
       }
+    }
+  }, {
+    key: 'disableDragAndDrop',
+    value: function disableDragAndDrop(_disableDragAndDrop) {
+      this.destroyEditor();
+      this.createOptions({ disableDragAndDrop: _disableDragAndDrop });
     }
   }, {
     key: 'disable',
